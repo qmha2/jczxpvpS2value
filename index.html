@@ -34,7 +34,7 @@
                 background-color: #fff;
                 border-radius: 6px;
                 padding: 0.4rem 0.6rem;
-                
+
                 box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
                 display: flex;
                 justify-content: space-between;
@@ -263,7 +263,7 @@
                 margin: 0 0 0 0;
                 /* 左侧留固定间距，不自动调整 */
                 padding: 4px 6px;
-                
+
                 border-radius: 8px;
                 /* 适配手机屏幕宽度 */
                 width: 60%;
@@ -273,7 +273,7 @@
                 flex-shrink: 0;
                 /* 5. 防止内部元素换行导致宽度变化 */
                 white-space: nowrap;
-                
+
             }
 
             /* 移动端开关样式（更大更易触控） */
@@ -516,7 +516,7 @@
                 margin-left: auto;
                 /* 新增这三句即可出现滚动条 */
                 max-height: 96.5vh;
-                
+
                 /* 限制最大高度 */
                 overflow-y: auto;
                 /* 竖向滚动 */
@@ -531,7 +531,7 @@
                 font-weight: bold;
                 color: #333;
                 padding: 0.8rem;
-                
+
 
                 margin-bottom: 0;
                 margin-top: 0.2rem;
@@ -630,18 +630,18 @@
             }
 
             /* 角色列表：一行11个，间距1.5rem */
-.role-list_pc {
-    display: grid;
-    /* 核心修改：自适应列数，每列最小 110px，最大自动填充 */
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 0.2rem;
-    justify-content: center;
-    min-height: 110px;
-    padding: 0.5rem;
-    border: 2px dashed #ccc;
-    border-radius: 6px;
-    overflow: hidden;
-}
+            .role-list_pc {
+                display: grid;
+                /* 核心修改：自适应列数，每列最小 110px，最大自动填充 */
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 0.2rem;
+                justify-content: center;
+                min-height: 110px;
+                padding: 0.5rem;
+                border: 2px dashed #ccc;
+                border-radius: 6px;
+                overflow: hidden;
+            }
 
 
             /* 角色卡片：固定尺寸，禁止压缩 */
@@ -770,10 +770,10 @@
                 color: #333;
                 justify-content: center;
 
-                background-color: #fafafa; 
+                background-color: #fafafa;
                 border-radius: 8px;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-               
+
             }
 
 
@@ -962,13 +962,7 @@
 </div>
         `;
 
-    // 4. 动态生成对应 DOM
-    body.innerHTML = isMobile ? mobileDomTemplate : pcDomTemplate;
 
-    // 5. 可选：监听窗口大小变化，刷新页面重新判断（按需启用）
-    window.addEventListener('resize', () => {
-        location.reload();
-    });
 
 
     // ========== 这里粘贴你的交互逻辑 JS 代码 ==========
@@ -1119,191 +1113,154 @@
     ];
 
 
-
-
     // 分组映射：
     const groupMaps_pc = {
-        //价值
-        groupA: {
-            high: ["4岚", "7拉", "8洛贝拉", "6莫拉鲁塔", "3魁纣", "7熔铄"],
-            mid: ["7拉2", "8巴贝拉红", "2乌琳", "7哈迪斯", "7赤夕", "5幽兰", "3SP昆仑", "4信风", "6SP伊根"],
-            low: ["5女王蜂", "3白兔", "7宙斯", "4夏炙", "2袅韵", "6赫格尼", "1灼碧", "1阿尔卑斯", "2琶音", "6赫格尼2", "2圣歌", "7托尔"]
-        },
-        //功能
-        groupB: {
-            high: ["4岚", "3魁纣", "8巴贝拉红", "2乌琳", "5幽兰", "1灼碧", "2琶音", "4信风"],
-            mid: ["8洛贝拉", "6莫拉鲁塔", "7哈迪斯", "5女王蜂", "3白兔", "7熔铄", "4夏炙", "6SP伊根", "7宙斯"],
-            low: ["7拉", "7拉2", "赤夕", "6赫格尼", "3SP昆仑", "2袅韵", "1阿尔卑斯", "6赫格尼2", "2圣歌", "7托尔"]
-        }
+        groupA: {},
+        groupB: {}
     };
 
 
+    // 4. 动态生成对应 DOM
+    // 5. 可选：监听窗口大小变化，刷新页面重新判断（按需启用）
+    body.innerHTML = isMobile ? mobileDomTemplate : pcDomTemplate;
+    window.addEventListener('resize', () => {
+        location.reload();
+    });
+
+
     // ========== 电脑 配置数据 ==========
-    // 角色基础数据（电脑端不要显示那么多0 去掉价值0的目标，不然滑动屏幕拖动）
     let baseRoles_pc = baseRoles_mobile;
 
     // 生成对应分组的角色配置
     function generateRolesConfig_pc(groupKey) {
         const map = groupMaps_pc[groupKey];
         return baseRoles_pc.map(role => {
-            //手机版本 低中一个颜色
-            //let grade = isMobile ? "mid": "low";
             let grade = "low";
-            //if (map.high.includes(role.id)) grade = "high";
-            //else if (map.mid.includes(role.id)) grade = "mid";
             if (role.value > 400) grade = "high";
             else if (role.value > 49) grade = "mid";
-
-
-
-
             return { ...role, grade };
         });
     }
-
-
 
     // 新增：全局状态 - 记录已选中的高端卡ID，实现限购1张
     let selectedHighRoleId = null;
     const isHighTierRole = (role) => role.grade === "high";
 
-    //手机还是电脑
-    if (!isMobile) {
-        //用于电脑版过滤掉价值等于0的目标，显示太多就乱了
-        function filterZeroValueRoles_pc(roleArray) {
-            return roleArray.filter(role => role.exhibit !== 0 && role.exhibit !== undefined);
-            //return roleArray.filter(role => role.value !== 0 && role.value !== undefined);
-        }
+    // ========== 全局变量 ==========
+    const teamMaxCount_pc = 5;
+    const roleStatus_pc = new Map();
+    const roleGroups_pc = {
+        high: document.getElementById("highRoleList_pc"),
+        mid: document.getElementById("midRoleList_pc"),
+        low: document.getElementById("lowRoleList_pc")
+    };
 
-        //过滤
-        //baseRoles_pc = filterZeroValueRoles_pc(baseRoles_mobile);
+    let currentConfigKey_pc = "groupA";
+    let rolesConfig_pc = generateRolesConfig_pc(currentConfigKey_pc);
 
-        // ========== 全局变量 ==========
-        const teamMaxCount_pc = 5;
-        const roleStatus_pc = new Map();
-        const roleGroups_pc = {
-            high: document.getElementById("highRoleList_pc"),
-            mid: document.getElementById("midRoleList_pc"),
-            low: document.getElementById("lowRoleList_pc")
-        };
+    // 初始化/更新分组标题
+    function initGroupTitles_pc(configKey) {
+        const isGroupA = configKey === "groupA";
+        document.getElementById("highGroupTitle_pc").textContent = isGroupA ? "高档区（价值≥400）" : "功能辅助";
+        document.getElementById("midGroupTitle_pc").textContent = isGroupA ? "中档区（价值400-50）" : "主C";
+        document.getElementById("lowGroupTitle_pc").textContent = isGroupA ? "低档区（价值≤50）" : "龟龟";
+    }
 
-        let currentConfigKey_pc = "groupA";
-        let rolesConfig_pc = generateRolesConfig_pc(currentConfigKey_pc);
-
-
-        // ========== 页面初始化 ==========
-        window.onload = function () {
+    // 绑定分组切换事件
+    function bindConfigToggleEvent_pc() {
+        const configBtn = document.getElementById("configToggleBtn_pc");
+        configBtn.addEventListener("click", function () {
+            currentConfigKey_pc = currentConfigKey_pc === "groupA" ? "groupB" : "groupA";
+            rolesConfig_pc = generateRolesConfig_pc(currentConfigKey_pc);
+            this.textContent = currentConfigKey_pc === "groupA" ? "切换类型分组" : "切换价值分组";
             initGroupTitles_pc(currentConfigKey_pc);
             renderRoleByGroup_pc();
-            bindConfigToggleEvent_pc();
             bindRoleGroupDragEvents_pc();
-        }
+        });
+    }
 
+    // 绑定分组拖拽事件
+    function bindRoleGroupDragEvents_pc() {
+        Object.entries(roleGroups_pc).forEach(([grade, group]) => {
+            group.ondragover = function (ev) { allowDrop_pc(ev); };
+            group.ondrop = function (ev) { dropToPool_pc(ev, grade, this); };
+        });
+    }
 
+    // 渲染角色列表（按价值排序+过滤已入队角色）
+    function renderRoleByGroup_pc() {
+        clearUnusedRoleLists_pc();
+        if (!rolesConfig_pc) return;
 
-        // 初始化/更新分组标题
-        function initGroupTitles_pc(configKey) {
-            const isGroupA = configKey === "groupA";
-            document.getElementById("highGroupTitle_pc").textContent = isGroupA ? "高档区（价值≥400）" : "功能辅助";
-            document.getElementById("midGroupTitle_pc").textContent = isGroupA ? "中档区（价值400-50）" : "主C";
-            document.getElementById("lowGroupTitle_pc").textContent = isGroupA ? "低档区（价值≤50）" : "龟龟";
-        }
+        const groupedRoles_pc = {};
+        rolesConfig_pc.forEach(role => {
+            const roleState = roleStatus_pc.get(role.id);
+            if (roleState && roleState.inTeam !== null) return;
 
-        // 绑定分组切换事件
-        function bindConfigToggleEvent_pc() {
-            const configBtn = document.getElementById("configToggleBtn_pc");
-            configBtn.addEventListener("click", function () {
-                currentConfigKey_pc = currentConfigKey_pc === "groupA" ? "groupB" : "groupA";
-                rolesConfig_pc = generateRolesConfig_pc(currentConfigKey_pc);
-                this.textContent = currentConfigKey_pc === "groupA" ? "切换类型分组" : "切换价值分组";
-                initGroupTitles_pc(currentConfigKey_pc);
-                renderRoleByGroup_pc();
-                bindRoleGroupDragEvents_pc();
+            if (!groupedRoles_pc[role.grade]) groupedRoles_pc[role.grade] = [];
+            groupedRoles_pc[role.grade].push(role);
+        });
+
+        Object.keys(groupedRoles_pc).forEach(grade => {
+            groupedRoles_pc[grade].sort((a, b) => {
+                // 先按 value 降序
+                if (b.value !== a.value) return b.value - a.value;
+                // value 相同则按 id 字符串升序
+                return a.id.localeCompare(b.id);
             });
-        }
+        });
 
-        // 绑定分组拖拽事件
-        function bindRoleGroupDragEvents_pc() {
-            Object.entries(roleGroups_pc).forEach(([grade, group]) => {
-                group.ondragover = function (ev) { allowDrop_pc(ev); };
-                group.ondrop = function (ev) { dropToPool_pc(ev, grade, this); };
-            });
-        }
 
-        // 渲染角色列表（按价值排序+过滤已入队角色）
-        function renderRoleByGroup_pc() {
-            clearUnusedRoleLists_pc();
-            if (!rolesConfig_pc) return;
+        // 渲染到对应分组
+        Object.keys(groupedRoles_pc).forEach(grade => {
+            const sortedRoles = groupedRoles_pc[grade];
+            const targetGroup = roleGroups_pc[grade];
+            if (!targetGroup) return;
 
-            const groupedRoles_pc = {};
-            rolesConfig_pc.forEach(role => {
+            sortedRoles.forEach(role => {
                 const roleState = roleStatus_pc.get(role.id);
-                if (roleState && roleState.inTeam !== null) return;
-
-                if (!groupedRoles_pc[role.grade]) groupedRoles_pc[role.grade] = [];
-                groupedRoles_pc[role.grade].push(role);
+                let roleItem;
+                if (roleState && roleState.inTeam === null) {
+                    roleItem = roleState.el;
+                    roleStatus_pc.set(role.id, { ...roleState, grade: grade });
+                    targetGroup.appendChild(roleItem);
+                } else {
+                    roleItem = createRoleElement_pc(role);
+                    targetGroup.appendChild(roleItem);
+                    roleStatus_pc.set(role.id, {
+                        inTeam: null,
+                        el: roleItem,
+                        grade: grade
+                    });
+                }
             });
+        });
+    }
 
-            Object.keys(groupedRoles_pc).forEach(grade => {
-                groupedRoles_pc[grade].sort((a, b) => {
-                    // 先按 value 降序
-                    if (b.value !== a.value) return b.value - a.value;
-                    // value 相同则按 id 字符串升序
-                    return a.id.localeCompare(b.id);
-                });
+    // 清空未入队角色的分组列表
+    function clearUnusedRoleLists_pc() {
+        Object.values(roleGroups_pc).forEach(group => {
+            Array.from(group.children).forEach(child => {
+                const roleId = child.dataset.id;
+                const roleState = roleStatus_pc.get(roleId);
+                if (!roleState || roleState.inTeam === null) {
+                    group.removeChild(child);
+                }
             });
+        });
+    }
 
-
-            // 渲染到对应分组
-            Object.keys(groupedRoles_pc).forEach(grade => {
-                const sortedRoles = groupedRoles_pc[grade];
-                const targetGroup = roleGroups_pc[grade];
-                if (!targetGroup) return;
-
-                sortedRoles.forEach(role => {
-                    const roleState = roleStatus_pc.get(role.id);
-                    let roleItem;
-                    if (roleState && roleState.inTeam === null) {
-                        roleItem = roleState.el;
-                        roleStatus_pc.set(role.id, { ...roleState, grade: grade });
-                        targetGroup.appendChild(roleItem);
-                    } else {
-                        roleItem = createRoleElement_pc(role);
-                        targetGroup.appendChild(roleItem);
-                        roleStatus_pc.set(role.id, {
-                            inTeam: null,
-                            el: roleItem,
-                            grade: grade
-                        });
-                    }
-                });
-            });
-        }
-
-        // 清空未入队角色的分组列表
-        function clearUnusedRoleLists_pc() {
-            Object.values(roleGroups_pc).forEach(group => {
-                Array.from(group.children).forEach(child => {
-                    const roleId = child.dataset.id;
-                    const roleState = roleStatus_pc.get(roleId);
-                    if (!roleState || roleState.inTeam === null) {
-                        group.removeChild(child);
-                    }
-                });
-            });
-        }
-
-        // 创建角色DOM元素
-        function createRoleElement_pc(role) {
-            const roleItem = document.createElement("div");
-            roleItem.className = "role-item_pc";
-            roleItem.draggable = true;
-            // 直接拼接 grade 对应的底色 class
-            roleItem.className = `role-item_pc ${role.grade}-bg_pc`;
-            roleItem.dataset.id = role.id;
-            roleItem.dataset.value = role.value;
-            roleItem.ondragstart = function (event) { drag_pc(event); }
-            roleItem.innerHTML = `
+    // 创建角色DOM元素
+    function createRoleElement_pc(role) {
+        const roleItem = document.createElement("div");
+        roleItem.className = "role-item_pc";
+        roleItem.draggable = true;
+        // 直接拼接 grade 对应的底色 class
+        roleItem.className = `role-item_pc ${role.grade}-bg_pc`;
+        roleItem.dataset.id = role.id;
+        roleItem.dataset.value = role.value;
+        roleItem.ondragstart = function (event) { drag_pc(event); }
+        roleItem.innerHTML = `
                 <div class="role-avatar_pc">
                     <img src="${role.avatarSrc}" alt="${role.name}头像">
                 </div>
@@ -1312,482 +1269,465 @@
                     <div class="role-value_pc">价值: ${role.value}</div>
                 </div>
             `;
-            return roleItem;
-        }
+        return roleItem;
+    }
 
-        // 分组内排序
-        function sortGroupByValue_pc(targetGroup) {
-            const roleItems = Array.from(targetGroup.querySelectorAll('.role-item_pc'));
-            roleItems.sort((a, b) => parseInt(b.dataset.value) - parseInt(a.dataset.value));
-            targetGroup.innerHTML = '';
-            roleItems.forEach(item => targetGroup.appendChild(item));
-        }
+    // 分组内排序
+    function sortGroupByValue_pc(targetGroup) {
+        const roleItems = Array.from(targetGroup.querySelectorAll('.role-item_pc'));
+        roleItems.sort((a, b) => parseInt(b.dataset.value) - parseInt(a.dataset.value));
+        targetGroup.innerHTML = '';
+        roleItems.forEach(item => targetGroup.appendChild(item));
+    }
 
-        // 队伍内排序
-        function sortTeamByValue_pc(targetTeamList) {
-            if (!targetTeamList) return;
-            const roleItems = Array.from(targetTeamList.querySelectorAll('.role-item_pc'));
-            if (roleItems.length <= 1) return;
-            roleItems.sort((a, b) => parseInt(b.dataset.value) - parseInt(a.dataset.value));
-            targetTeamList.innerHTML = '';
-            roleItems.forEach(item => targetTeamList.appendChild(item));
-        }
+    // 队伍内排序
+    function sortTeamByValue_pc(targetTeamList) {
+        if (!targetTeamList) return;
+        const roleItems = Array.from(targetTeamList.querySelectorAll('.role-item_pc'));
+        if (roleItems.length <= 1) return;
+        roleItems.sort((a, b) => parseInt(b.dataset.value) - parseInt(a.dataset.value));
+        targetTeamList.innerHTML = '';
+        roleItems.forEach(item => targetTeamList.appendChild(item));
+    }
 
-        // ========== 拖拽相关函数 ==========
-        function allowDrop_pc(ev) {
-            ev.preventDefault();
-            const targetList = ev.target.closest('.role-list_pc, .team-role-list_pc');
-            if (targetList) targetList.classList.add('highlight_pc');
-            ev.target.addEventListener('dragleave', () => {
-                if (targetList) targetList.classList.remove('highlight_pc');
-            }, { once: true });
-        }
-
-        function drag_pc(ev) {
-            const roleItem = ev.target.closest('.role-item_pc');
-            if (!roleItem) return;
-            const roleId = roleItem.dataset.id;
-            const roleState = roleStatus_pc.get(roleId);
-            if (!roleState) return;
-
-            ev.dataTransfer.setData("text", JSON.stringify({
-                id: roleId,
-                source: roleState.inTeam
-            }));
-        }
-
-        function drop_pc(ev, targetTeam) {
-            ev.preventDefault();
-            const targetList = ev.target.closest('.team-role-list_pc');
+    // ========== 拖拽相关函数 ==========
+    function allowDrop_pc(ev) {
+        ev.preventDefault();
+        const targetList = ev.target.closest('.role-list_pc, .team-role-list_pc');
+        if (targetList) targetList.classList.add('highlight_pc');
+        ev.target.addEventListener('dragleave', () => {
             if (targetList) targetList.classList.remove('highlight_pc');
+        }, { once: true });
+    }
 
-            const data = JSON.parse(ev.dataTransfer.getData("text"));
-            const roleId = data.id;
-            const sourceTeam = data.source;
+    function drag_pc(ev) {
+        const roleItem = ev.target.closest('.role-item_pc');
+        if (!roleItem) return;
+        const roleId = roleItem.dataset.id;
+        const roleState = roleStatus_pc.get(roleId);
+        if (!roleState) return;
 
-            const targetTeamList = document.querySelector(`.team-card_pc[data-team="${targetTeam}"] .team-role-list_pc`);
-            if (targetTeamList.children.length >= teamMaxCount_pc) {
-                alert(`队伍${targetTeam}已达最大人数！`);
-                return;
-            }
+        ev.dataTransfer.setData("text", JSON.stringify({
+            id: roleId,
+            source: roleState.inTeam
+        }));
+    }
 
+    function drop_pc(ev, targetTeam) {
+        ev.preventDefault();
+        const targetList = ev.target.closest('.team-role-list_pc');
+        if (targetList) targetList.classList.remove('highlight_pc');
 
+        const data = JSON.parse(ev.dataTransfer.getData("text"));
+        const roleId = data.id;
+        const sourceTeam = data.source;
 
-            const roleInfo = roleStatus_pc.get(roleId);
-            if (!roleInfo) return;
-
-            // 移除来源
-            if (sourceTeam === null) {
-                const sourceGroup = roleGroups_pc[roleInfo.grade];
-                if (sourceGroup && sourceGroup.contains(roleInfo.el)) sourceGroup.removeChild(roleInfo.el);
-            } else {
-                const sourceTeamList = document.querySelector(`.team-card_pc[data-team="${sourceTeam}"] .team-role-list_pc`);
-                if (sourceTeamList && sourceTeamList.contains(roleInfo.el)) {
-                    sourceTeamList.removeChild(roleInfo.el);
-                    updateTeamValue_pc(sourceTeam);
-                }
-            }
-
-            // 添加到目标队伍并排序
-            const roleClone = roleInfo.el.cloneNode(true);
-            roleClone.ondragstart = function (event) { drag_pc(event); }
-            targetTeamList.appendChild(roleClone);
-            sortTeamByValue_pc(targetTeamList);
-
-            roleStatus_pc.set(roleId, {
-                ...roleInfo,
-                inTeam: targetTeam,
-                el: roleClone
-            });
-
-            updateTeamValue_pc(targetTeam);
-            updateTotalValue_pc();
+        const targetTeamList = document.querySelector(`.team-card_pc[data-team="${targetTeam}"] .team-role-list_pc`);
+        if (targetTeamList.children.length >= teamMaxCount_pc) {
+            alert(`队伍${targetTeam}已达最大人数！`);
+            return;
         }
 
-        function dropToPool_pc(ev, targetGrade, targetGroupEl) {
-            ev.preventDefault();
-            const roleList = ev.target.closest('.role-list_pc');
-            if (roleList) roleList.classList.remove('highlight_pc');
+        const roleInfo = roleStatus_pc.get(roleId);
+        if (!roleInfo) return;
 
-            let data;
-            try {
-                data = JSON.parse(ev.dataTransfer.getData("text"));
-            } catch (e) { return; }
+        // 移除来源
+        if (sourceTeam === null) {
+            const sourceGroup = roleGroups_pc[roleInfo.grade];
+            if (sourceGroup && sourceGroup.contains(roleInfo.el)) sourceGroup.removeChild(roleInfo.el);
+        } else {
+            const sourceTeamList = document.querySelector(`.team-card_pc[data-team="${sourceTeam}"] .team-role-list_pc`);
+            if (sourceTeamList && sourceTeamList.contains(roleInfo.el)) {
+                sourceTeamList.removeChild(roleInfo.el);
+                updateTeamValue_pc(sourceTeam);
+            }
+        }
 
-            const roleId = data.id;
-            const sourceTeam = data.source;
+        // 添加到目标队伍并排序
+        const roleClone = roleInfo.el.cloneNode(true);
+        roleClone.ondragstart = function (event) { drag_pc(event); }
+        targetTeamList.appendChild(roleClone);
+        sortTeamByValue_pc(targetTeamList);
+
+        roleStatus_pc.set(roleId, {
+            ...roleInfo,
+            inTeam: targetTeam,
+            el: roleClone
+        });
+
+        updateTeamValue_pc(targetTeam);
+        updateTotalValue_pc();
+    }
+
+    function dropToPool_pc(ev, targetGrade, targetGroupEl) {
+        ev.preventDefault();
+        const roleList = ev.target.closest('.role-list_pc');
+        if (roleList) roleList.classList.remove('highlight_pc');
+
+        let data;
+        try {
+            data = JSON.parse(ev.dataTransfer.getData("text"));
+        } catch (e) { return; }
+
+        const roleId = data.id;
+        const sourceTeam = data.source;
+        const roleInfo = roleStatus_pc.get(roleId);
+        if (!roleInfo) return;
+
+        // 移除来源
+        if (sourceTeam === null) {
+            const sourceGroup = roleGroups_pc[roleInfo.grade];
+            if (sourceGroup && sourceGroup.contains(roleInfo.el)) sourceGroup.removeChild(roleInfo.el);
+        } else {
+            const sourceTeamList = document.querySelector(`.team-card_pc[data-team="${sourceTeam}"] .team-role-list_pc`);
+            if (sourceTeamList && sourceTeamList.contains(roleInfo.el)) {
+                sourceTeamList.removeChild(roleInfo.el);
+                updateTeamValue_pc(sourceTeam);
+            }
+        }
+
+        // 添加到目标分组并排序
+        const finalGrade = targetGrade || roleInfo.grade;
+        const finalGroup = roleGroups_pc[finalGrade] || roleGroups_pc.low;
+        finalGroup.appendChild(roleInfo.el);
+        sortGroupByValue_pc(finalGroup);
+
+        roleStatus_pc.set(roleId, {
+            ...roleInfo,
+            inTeam: null,
+            grade: finalGrade,
+            el: roleInfo.el
+        });
+
+        updateTotalValue_pc();
+    }
+
+    // ========== 辅助函数 ==========
+    function clearTeam_pc(teamNum) {
+        const teamList = document.querySelector(`.team-card_pc[data-team="${teamNum}"] .team-role-list_pc`);
+        Array.from(teamList.children).forEach(item => {
+            const roleId = item.dataset.id;
             const roleInfo = roleStatus_pc.get(roleId);
             if (!roleInfo) return;
 
-            // 移除来源
-            if (sourceTeam === null) {
-                const sourceGroup = roleGroups_pc[roleInfo.grade];
-                if (sourceGroup && sourceGroup.contains(roleInfo.el)) sourceGroup.removeChild(roleInfo.el);
-            } else {
-                const sourceTeamList = document.querySelector(`.team-card_pc[data-team="${sourceTeam}"] .team-role-list_pc`);
-                if (sourceTeamList && sourceTeamList.contains(roleInfo.el)) {
-                    sourceTeamList.removeChild(roleInfo.el);
-                    updateTeamValue_pc(sourceTeam);
-                }
+            const targetGroup = roleGroups_pc[roleInfo.grade];
+            if (targetGroup) {
+                targetGroup.appendChild(roleInfo.el);
+                sortGroupByValue_pc(targetGroup);
             }
-
-            // 添加到目标分组并排序
-            const finalGrade = targetGrade || roleInfo.grade;
-            const finalGroup = roleGroups_pc[finalGrade] || roleGroups_pc.low;
-            finalGroup.appendChild(roleInfo.el);
-            sortGroupByValue_pc(finalGroup);
 
             roleStatus_pc.set(roleId, {
                 ...roleInfo,
                 inTeam: null,
-                grade: finalGrade,
                 el: roleInfo.el
             });
-
-            updateTotalValue_pc();
-        }
-
-        // ========== 辅助函数 ==========
-        function clearTeam_pc(teamNum) {
-            const teamList = document.querySelector(`.team-card_pc[data-team="${teamNum}"] .team-role-list_pc`);
-            Array.from(teamList.children).forEach(item => {
-                const roleId = item.dataset.id;
-                const roleInfo = roleStatus_pc.get(roleId);
-                if (!roleInfo) return;
-
-                const targetGroup = roleGroups_pc[roleInfo.grade];
-                if (targetGroup) {
-                    targetGroup.appendChild(roleInfo.el);
-                    sortGroupByValue_pc(targetGroup);
-                }
-
-                roleStatus_pc.set(roleId, {
-                    ...roleInfo,
-                    inTeam: null,
-                    el: roleInfo.el
-                });
-            });
-            teamList.innerHTML = '';
-            document.getElementById(`team${teamNum}Value_pc`).textContent = 0;
-            updateTotalValue_pc();
-        }
-
-        // 全局变量：记录特防开关是否勾选
-        let defenseChecked = false;
-        // 页面加载完成后执行
-        // 全局开关状态变量
-
-        function updateTeamValue_pc(teamNum) {
-            const teamList = document.querySelector(`.team-card_pc[data-team="${teamNum}"] .team-role-list_pc`);
-            let total = 0;
-            Array.from(teamList.children).forEach(item => {
-                total += parseInt(item.dataset.value) || 0;
-            });
-            const valueSpan = document.getElementById(`team${teamNum}Value_pc`);
-
-            // 3. 如果特防开关已勾选，额外 +100（可根据需求调整加成数值）
-            if (teamNum == 3 && defenseChecked) {
-                total += 100;
-            }
-            if (valueSpan) valueSpan.textContent = total;
-        }
-
-
-
-        // 页面加载完成后绑定事件
-        document.addEventListener('DOMContentLoaded', function () {
-            // 注意：这里的 ID 必须和 HTML 中的 id="defense-switch-pc" 完全一致
-            const defenseSwitch = document.getElementById('defense-switch-pc');
-            if (!defenseSwitch) {
-                console.warn('未找到特防开关元素，请检查 ID 是否匹配');
-                return;
-            }
-
-            // 开关状态变化时触发
-            defenseSwitch.addEventListener('change', function () {
-                defenseChecked = this.checked;
-                // 更新3 重新计算总价值
-                updateTeamValue_pc(3)
-
-                updateTotalValue_pc();
-            });
         });
+        teamList.innerHTML = '';
+        document.getElementById(`team${teamNum}Value_pc`).textContent = 0;
+        updateTotalValue_pc();
+    }
 
+    // 全局变量：记录特防开关是否勾选
+    let defenseChecked = false;
+    // 页面加载完成后执行
+    // 全局开关状态变量
 
-        function updateTotalValue_pc() {
-            // 1. 获取三个队伍的当前价值
-            const team1 = parseInt(document.getElementById('team1Value_pc')?.textContent) || 0;
-            const team2 = parseInt(document.getElementById('team2Value_pc')?.textContent) || 0;
-            const team3 = parseInt(document.getElementById('team3Value_pc')?.textContent) || 0;
+    function updateTeamValue_pc(teamNum) {
+        const teamList = document.querySelector(`.team-card_pc[data-team="${teamNum}"] .team-role-list_pc`);
+        let total = 0;
+        Array.from(teamList.children).forEach(item => {
+            total += parseInt(item.dataset.value) || 0;
+        });
+        const valueSpan = document.getElementById(`team${teamNum}Value_pc`);
 
-            // 2. 计算基础总和
-            let total = team1 + team2 + team3;
-
-
-
-            // 4. 更新总价值显示
-            const totalSpan = document.getElementById('totalValue_pc');
-            if (totalSpan) totalSpan.textContent = total;
+        // 3. 如果特防开关已勾选，额外 +100（可根据需求调整加成数值）
+        if (teamNum == 3 && defenseChecked) {
+            total += 100;
         }
+        if (valueSpan) valueSpan.textContent = total;
+    }
+
+    function updateTotalValue_pc() {
+        // 1. 获取三个队伍的当前价值
+        const team1 = parseInt(document.getElementById('team1Value_pc')?.textContent) || 0;
+        const team2 = parseInt(document.getElementById('team2Value_pc')?.textContent) || 0;
+        const team3 = parseInt(document.getElementById('team3Value_pc')?.textContent) || 0;
+
+        // 2. 计算基础总和
+        let total = team1 + team2 + team3;
+
+        // 4. 更新总价值显示
+        const totalSpan = document.getElementById('totalValue_pc');
+        if (totalSpan) totalSpan.textContent = total;
+    }
+
+    // 3. 生成带等级+排序的角色配置
+    function generateSortedRoles_mobile() {
+        //调用电脑版本分组A，获取数据
+        return generateRolesConfig_pc("groupA").sort((a, b) => {
+            //手机版本按照 阵营排
+            if (b.value !== a.value) return b.value - a.value;
+            return a.id.localeCompare(b.id);
+        });
+    }
+
+    // 4. 全局状态
+    const rolesConfig_mobile = generateSortedRoles_mobile();
 
 
-
-    } else {
-
-        // 3. 生成带等级+排序的角色配置
-        function generateSortedRoles_mobile() {
-            //调用电脑版本分组A，获取数据
-            return generateRolesConfig_pc("groupA").sort((a, b) => {
-                //手机版本按照 阵营排
-                if (b.value !== a.value) return b.value - a.value;
-                return a.id.localeCompare(b.id);
-            });
-        }
-
-        // 4. 全局状态
-        const rolesConfig_mobile = generateSortedRoles_mobile();
+    let selectedTeamId_mobile = 1;
+    const maxTeamSize_mobile = 5;
+    const teamIds_mobile = [1, 2, 3];
+    let usedRoleMap_mobile = new Map();
 
 
-        let selectedTeamId_mobile = 1;
-        const maxTeamSize_mobile = 5;
-        const teamIds_mobile = [1, 2, 3];
-        let usedRoleMap_mobile = new Map();
+    // 全局变量：记录移动端各队伍是否有高端卡，初始为空对象
+    const teamHasHighTier_mobile = {};
 
+    // 5. 工具函数
+    function getRoleById_mobile(roleId) {
+        return rolesConfig_mobile.find(r => r.id === roleId);
+    }
 
-
-
-        // 全局变量：记录移动端各队伍是否有高端卡，初始为空对象
-        const teamHasHighTier_mobile = {};
-
-        // 5. 工具函数
-        function getRoleById_mobile(roleId) {
-            return rolesConfig_mobile.find(r => r.id === roleId);
-        }
-
-        function createRoleElement_mobile(role) {
-            const div = document.createElement("div");
-            // 价值0显示蓝色（已经禁用） + 初始无禁用样式
-            //div.className = `role-item_mobile ${role.value === 0 ? 'zero_mobile' : `${role.grade}_mobile`}`;
-
-
-            div.className = `role-item_mobile ${`${role.grade}_mobile`}`;
-
-
-
-            div.dataset.id = role.id;
-            div.dataset.value = role.value;
-            div.innerHTML = `
+    function createRoleElement_mobile(role) {
+        const div = document.createElement("div");
+        // 价值0显示蓝色（已经禁用） + 初始无禁用样式
+        //div.className = `role-item_mobile ${role.value === 0 ? 'zero_mobile' : `${role.grade}_mobile`}`;
+        div.className = `role-item_mobile ${`${role.grade}_mobile`}`;
+        div.dataset.id = role.id;
+        div.dataset.value = role.value;
+        div.innerHTML = `
         <div class="role-avatar_mobile"><img src="${role.avatarSrc}" alt="${role.name}"></div>
         <div class="role-info_mobile">
             <span class="role-name_mobile">${role.name}</span>
             <span class="role-value-text_mobile">${role.value}</span>
         </div>
     `;
-            div.addEventListener("click", function () {
-                if (!selectedTeamId_mobile) return;
-                // 检查是否已被选中（通过 usedRoleMap 判断）
-                if (usedRoleMap_mobile.get(role.id)) return;
-                const teamList = document.getElementById(`teamRoleList${selectedTeamId_mobile}_mobile`);
-                if (teamList.children.length >= maxTeamSize_mobile) return;
+        div.addEventListener("click", function () {
+            if (!selectedTeamId_mobile) return;
+            // 检查是否已被选中（通过 usedRoleMap 判断）
+            if (usedRoleMap_mobile.get(role.id)) return;
+            const teamList = document.getElementById(`teamRoleList${selectedTeamId_mobile}_mobile`);
+            if (teamList.children.length >= maxTeamSize_mobile) return;
 
-                //这个地方
-                // ========== 新增核心限制逻辑 ==========
-                // 1. 判断当前卡牌是否为高端卡
-                //const isHighTier = isHighTierRole(role);
-                // 2. 校验选中队伍是否已有高端卡
-                //if (isHighTier) {
-                //    if (teamHasHighTier_mobile[selectedTeamId_mobile] === true) return;
-                //    else teamHasHighTier_mobile[selectedTeamId_mobile] = true;
-                //}
+            //这个地方
+            // ========== 新增核心限制逻辑 ==========
+            // 1. 判断当前卡牌是否为高端卡
+            //const isHighTier = isHighTierRole(role);
+            // 2. 校验选中队伍是否已有高端卡
+            //if (isHighTier) {
+            //    if (teamHasHighTier_mobile[selectedTeamId_mobile] === true) return;
+            //    else teamHasHighTier_mobile[selectedTeamId_mobile] = true;
+            //}
 
-                // 选中后添加禁用样式（变灰不可选）
-                div.classList.add("disabled_mobile");
-                addRoleToTeam_mobile(role, selectedTeamId_mobile);
-                usedRoleMap_mobile.set(role.id, selectedTeamId_mobile);
-            });
-            return div;
-        }
+            // 选中后添加禁用样式（变灰不可选）
+            div.classList.add("disabled_mobile");
+            addRoleToTeam_mobile(role, selectedTeamId_mobile);
+            usedRoleMap_mobile.set(role.id, selectedTeamId_mobile);
+        });
+        return div;
+    }
 
-        function createTeamRoleElement_mobile(role) {
+    function createTeamRoleElement_mobile(role) {
 
-            const div = document.createElement("div");
-            //div.className = `role-item_mobile ${role.value === 0 ? 'zero_mobile' : `${role.grade}_mobile`} team-role-item_mobile`;
-            div.className = `role-item_mobile ${`${role.grade}_mobile`} team-role-item_mobile`;
+        const div = document.createElement("div");
+        //div.className = `role-item_mobile ${role.value === 0 ? 'zero_mobile' : `${role.grade}_mobile`} team-role-item_mobile`;
+        div.className = `role-item_mobile ${`${role.grade}_mobile`} team-role-item_mobile`;
 
-            div.dataset.id = role.id;
-            div.dataset.value = role.value;
-            div.dataset.grade = role.grade;
+        div.dataset.id = role.id;
+        div.dataset.value = role.value;
+        div.dataset.grade = role.grade;
 
-            //100 是否暴漏
-            const name = role.exhibit == 0 ? '???' : role.name;
-            const avatarSrc = role.exhibit == 0 ? 'data:image/png;base64,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' : role.avatarSrc;
-            const value = role.exhibit == 0 ? '???' : role.value;
-
-            div.innerHTML = `
+        div.innerHTML = `
         <div class="role-avatar_mobile"><img src="${role.avatarSrc}" alt="${role.name}"></div>
         <div class="role-info_mobile">
             <span class="role-name_mobile">${role.name}</span>
             <span class="role-value-text_mobile">${role.value}</span>
         </div>
     `;
-            div.addEventListener("click", function () {
-                const teamId = usedRoleMap_mobile.get(role.id);
-                if (!teamId) return;
-                document.getElementById(`teamRoleList${teamId}_mobile`).removeChild(div);
-                usedRoleMap_mobile.set(role.id, null);
+        div.addEventListener("click", function () {
+            const teamId = usedRoleMap_mobile.get(role.id);
+            if (!teamId) return;
+            document.getElementById(`teamRoleList${teamId}_mobile`).removeChild(div);
+            usedRoleMap_mobile.set(role.id, null);
 
-                // 2. 高端卡退出，解除限制
-                //const isHighTier = isHighTierRole(role);
-                //if (isHighTier) teamHasHighTier_mobile[selectedTeamId_mobile] = false;
+            // 2. 高端卡退出，解除限制
+            //const isHighTier = isHighTierRole(role);
+            //if (isHighTier) teamHasHighTier_mobile[selectedTeamId_mobile] = false;
 
-                putRoleBackToList_mobile(role.id);
-                updateTeamValue_mobile(teamId);
-                updateGlobalTotalValue_mobile();
-            });
-            return div;
-        }
-
-        function putRoleBackToList_mobile(roleId) {
-            const role = getRoleById_mobile(roleId);
-
-            if (!role) return;
-            const list = document.getElementById("mergedRoleList_mobile");
-            // 先查找卡池中是否存在该角色的禁用元素，存在则恢复
-            const existingItem = Array.from(list.children).find(item => item.dataset.id === roleId);
-            if (existingItem) {
-                existingItem.classList.remove("disabled_mobile"); // 移除禁用样式，恢复可选
-                usedRoleMap_mobile.set(roleId, null);
-                return;
-            }
-            // 若不存在（极端情况），重新创建元素并插入
-            const newItem = createRoleElement_mobile(role);
-            const items = Array.from(list.children);
-            const insertIndex = items.findIndex(item => parseInt(item.dataset.value) < role.value);
-            if (insertIndex === -1) {
-                list.appendChild(newItem);
-            } else {
-                list.insertBefore(newItem, items[insertIndex]);
-            }
-        }
-
-        // 完善：加入队伍时自动排序
-
-
-
-
-        // 6. 核心交互
-        function selectTeam_mobile(teamId) {
-
-            // 1. 取消所有队伍的选中状态
-            document.querySelectorAll(".team-card_mobile").forEach(c => c.classList.remove("selected_mobile"));
-            // 2. 标记当前队伍为选中状态
-            const currentTeam = document.getElementById(`team${teamId}_mobile`);
-            currentTeam.classList.add("selected_mobile");
-            selectedTeamId_mobile = teamId;
-
-
-        }
-
-        function addRoleToTeam_mobile(role, teamId) {
-            // 1. 获取对应队伍的列表容器
-            const teamList = document.getElementById(`teamRoleList${teamId}_mobile`);
-
-            // 2. 创建队伍角色元素并添加
-            const roleElement = createTeamRoleElement_mobile(role);
-            teamList.appendChild(roleElement);
-
-            // 3. 对队伍内元素按价值降序排序（核心新增代码）
-            const roleItems = Array.from(teamList.children);
-            roleItems.sort((a, b) => {
-                const valA = parseInt(a.dataset.value || 0);
-                const valB = parseInt(b.dataset.value || 0);
-                return valB - valA; // 降序排列，valB大的排前面
-            });
-
-            // 4. 清空原列表，按排序后的顺序重新添加
-            teamList.innerHTML = "";
-            roleItems.forEach(item => teamList.appendChild(item));
-
-            // 5. 更新队伍价值和全局总价值
+            putRoleBackToList_mobile(role.id);
             updateTeamValue_mobile(teamId);
             updateGlobalTotalValue_mobile();
+        });
+        return div;
+    }
+
+    function putRoleBackToList_mobile(roleId) {
+        const role = getRoleById_mobile(roleId);
+
+        if (!role) return;
+        const list = document.getElementById("mergedRoleList_mobile");
+        // 先查找卡池中是否存在该角色的禁用元素，存在则恢复
+        const existingItem = Array.from(list.children).find(item => item.dataset.id === roleId);
+        if (existingItem) {
+            existingItem.classList.remove("disabled_mobile"); // 移除禁用样式，恢复可选
+            usedRoleMap_mobile.set(roleId, null);
+            return;
+        }
+        // 若不存在（极端情况），重新创建元素并插入
+        const newItem = createRoleElement_mobile(role);
+        const items = Array.from(list.children);
+        const insertIndex = items.findIndex(item => parseInt(item.dataset.value) < role.value);
+        if (insertIndex === -1) {
+            list.appendChild(newItem);
+        } else {
+            list.insertBefore(newItem, items[insertIndex]);
+        }
+    }
+
+    // 完善：加入队伍时自动排序
+
+
+
+
+    // 6. 核心交互
+    function selectTeam_mobile(teamId) {
+        // 1. 取消所有队伍的选中状态
+        document.querySelectorAll(".team-card_mobile").forEach(c => c.classList.remove("selected_mobile"));
+        // 2. 标记当前队伍为选中状态
+        const currentTeam = document.getElementById(`team${teamId}_mobile`);
+        currentTeam.classList.add("selected_mobile");
+        selectedTeamId_mobile = teamId;
+    }
+
+
+    function addRoleToTeam_mobile(role, teamId) {
+        // 1. 获取对应队伍的列表容器
+        const teamList = document.getElementById(`teamRoleList${teamId}_mobile`);
+
+        // 2. 创建队伍角色元素并添加
+        const roleElement = createTeamRoleElement_mobile(role);
+        teamList.appendChild(roleElement);
+
+        // 3. 对队伍内元素按价值降序排序（核心新增代码）
+        const roleItems = Array.from(teamList.children);
+        roleItems.sort((a, b) => {
+            const valA = parseInt(a.dataset.value || 0);
+            const valB = parseInt(b.dataset.value || 0);
+            return valB - valA; // 降序排列，valB大的排前面
+        });
+
+        // 4. 清空原列表，按排序后的顺序重新添加
+        teamList.innerHTML = "";
+        roleItems.forEach(item => teamList.appendChild(item));
+
+        // 5. 更新队伍价值和全局总价值
+        updateTeamValue_mobile(teamId);
+        updateGlobalTotalValue_mobile();
+    }
+
+    // 7. 价值统计
+    function updateTeamValue_mobile(teamId) {
+        const teamList = document.getElementById(`teamRoleList${teamId}_mobile`);
+        let total = 0;
+        Array.from(teamList.children).forEach(item => total += parseInt(item.dataset.value) || 0);
+
+        // 1. 获取开关状态（假设你用 checkbox 实现，id 为 specialDefenseSwitch）
+        const defenseSwitch = document.getElementById("specialDefenseSwitch_mobile");
+        if (teamId == 3 && defenseSwitch && defenseSwitch.checked) {
+            total += 100; // 开启特防后增加的数值，可自定义
         }
 
-        // 7. 价值统计
-        function updateTeamValue_mobile(teamId) {
-            const teamList = document.getElementById(`teamRoleList${teamId}_mobile`);
-            let total = 0;
-            Array.from(teamList.children).forEach(item => total += parseInt(item.dataset.value) || 0);
+        document.getElementById(`teamValue${teamId}_mobile`).textContent = total;
+    }
 
-            // 新增：判断特防开关是否开启，开启则增加数值（这里以+100为例，可自行调整）
-            // 1. 获取开关状态（假设你用 checkbox 实现，id 为 specialDefenseSwitch）
-            const defenseSwitch = document.getElementById("specialDefenseSwitch_mobile");
-            if (teamId == 3 && defenseSwitch && defenseSwitch.checked) {
-                total += 100; // 开启特防后增加的数值，可自定义
-            }
-
-            document.getElementById(`teamValue${teamId}_mobile`).textContent = total;
-        }
-
-        function updateGlobalTotalValue_mobile() {
-            let total = 0;
-            // 计算所有队伍的价值总和
-            teamIds_mobile.forEach(id => {
-                const val = document.getElementById(`teamValue${id}_mobile`).textContent;
-                total += parseInt(val) || 0;
-            });
-
-
-            // 最终更新全局总价值显示
-            document.getElementById("globalTotalValue_mobile").textContent = total;
-        }
-
-
-
-        // 8. 渲染角色列表
-        function renderMergedRoleList_mobile() {
-            usedRoleMap_mobile.clear();
-            const list = document.getElementById("mergedRoleList_mobile");
-            list.innerHTML = "";
-            rolesConfig_mobile.forEach(role => {
-                usedRoleMap_mobile.set(role.id, null);
-                list.appendChild(createRoleElement_mobile(role));
-            });
-        }
-
-        // 初始化
-        //window.onload = function () {
-        //    renderMergedRoleList_mobile();
-        ///    selectTeam_mobile(1);
-        //    updateGlobalTotalValue_mobile();
-        //};
-
-        // 绑定开关 + 页面初始化 合并在一起（苹果专用稳）
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. 初始化角色列表、选中队伍1
-            renderMergedRoleList_mobile();
-            selectTeam_mobile(1);
-
-            // 2. 绑定特防开关
-            const defenseSwitch = document.getElementById('specialDefenseSwitch_mobile');
-            if (defenseSwitch) {
-                defenseSwitch.addEventListener('change', function () {
-                    updateTeamValue_mobile(3);
-                    updateGlobalTotalValue_mobile();
-                });
-            }
-
-            // 3. 初始化总价值
-            updateGlobalTotalValue_mobile();
+    function updateGlobalTotalValue_mobile() {
+        let total = 0;
+        // 计算所有队伍的价值总和
+        teamIds_mobile.forEach(id => {
+            const val = document.getElementById(`teamValue${id}_mobile`).textContent;
+            total += parseInt(val) || 0;
         });
 
 
-
-
-
-
-
+        // 最终更新全局总价值显示
+        document.getElementById("globalTotalValue_mobile").textContent = total;
     }
+
+
+
+    // 8. 渲染角色列表
+    function renderMergedRoleList_mobile() {
+        usedRoleMap_mobile.clear();
+        const list = document.getElementById("mergedRoleList_mobile");
+        list.innerHTML = "";
+        rolesConfig_mobile.forEach(role => {
+            usedRoleMap_mobile.set(role.id, null);
+            list.appendChild(createRoleElement_mobile(role));
+        });
+    }
+
+
+
+
+    // ========== 移动端统一初始化（兼容 iOS） ==========
+    function initMobile() {
+        // 1. 初始化角色列表、选中队伍1
+        renderMergedRoleList_mobile();
+        selectTeam_mobile(1);
+
+        // 2. 绑定特防开关
+        const defenseSwitch = document.getElementById('specialDefenseSwitch_mobile');
+        if (defenseSwitch) {
+            defenseSwitch.addEventListener('change', function () {
+                updateTeamValue_mobile(3);
+                updateGlobalTotalValue_mobile();
+            });
+        }
+
+        // 3. 初始化总价值
+        updateGlobalTotalValue_mobile();
+    }
+
+
+
+
+    // ========== PC 统一初始化 ==========
+    function initPC() {
+        // 初始化分组标题
+        initGroupTitles_pc(currentConfigKey_pc);
+        // 渲染角色
+        renderRoleByGroup_pc();
+        // 绑定切换分组按钮
+        bindConfigToggleEvent_pc();
+        // 绑定分组拖拽
+        bindRoleGroupDragEvents_pc();
+
+        // 绑定特防开关（合并到这里，不再单独写）
+        const defenseSwitch = document.getElementById('defense-switch-pc');
+        if (defenseSwitch) {
+            defenseSwitch.addEventListener('change', function () {
+                defenseChecked = this.checked;
+                updateTeamValue_pc(3);
+                updateTotalValue_pc();
+            });
+        }
+    }
+
+
+    //启动
+    setTimeout(() => {
+        // 最后统一启动
+        if (isMobile) {
+            initMobile()
+        } 
+        else {
+            initPC();
+        }
+    }, 50);
+
+
+
 </script>
 
 </html>
