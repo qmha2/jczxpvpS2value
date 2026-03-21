@@ -516,6 +516,7 @@
                 margin-left: auto;
                 /* 新增这三句即可出现滚动条 */
                 max-height: 96.5vh;
+                
                 /* 限制最大高度 */
                 overflow-y: auto;
                 /* 竖向滚动 */
@@ -629,17 +630,19 @@
             }
 
             /* 角色列表：一行11个，间距1.5rem */
-            .role-list_pc {
-                display: grid;
-                grid-template-columns: repeat(9, 110px);
-                gap: 0.2rem;
-                justify-content: center;
-                min-height: 110px;
-                padding: 0.5rem;
-                border: 2px dashed #ccc;
-                border-radius: 6px;
-                overflow: hidden;
-            }
+.role-list_pc {
+    display: grid;
+    /* 核心修改：自适应列数，每列最小 110px，最大自动填充 */
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.2rem;
+    justify-content: center;
+    min-height: 110px;
+    padding: 0.5rem;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
 
             /* 角色卡片：固定尺寸，禁止压缩 */
             /* 高档区角色 - 浅红底 */
