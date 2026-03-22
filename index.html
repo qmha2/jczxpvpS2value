@@ -1123,9 +1123,9 @@
     // 4. 动态生成对应 DOM
     // 5. 可选：监听窗口大小变化，刷新页面重新判断（按需启用）
     body.innerHTML = isMobile ? mobileDomTemplate : pcDomTemplate;
-    window.addEventListener('resize', () => {
-        location.reload();
-    });
+    //window.addEventListener('resize', () => {
+    //    location.reload();
+    //});
 
 
     // ========== 电脑 配置数据 ==========
