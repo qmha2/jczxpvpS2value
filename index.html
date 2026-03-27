@@ -1337,6 +1337,32 @@
     //window.addEventListener('resize', () => {
     //    location.reload();
     //});
+    // PC 端存储 key
+    const STORAGE_KEY_PC = "team_data_pc";
+    // 手机端存储 key
+    const STORAGE_KEY_MOBILE = "team_data_mobile";
+
+    function saveDataToLocal_pc(key, data) {
+        try {
+            localStorage.setItem(key, data);
+            return true;
+        } catch (err) {
+            console.error('保存本地数据失败:', err);
+            return false;
+        }
+    }
+
+    // 从本地加载数据（不解析 JSON）
+    function loadDataFromLocal_pc(key, defaultValue = null) {
+        try {
+            const jsonStr = localStorage.getItem(key);
+            if (jsonStr === null) return defaultValue;
+            return jsonStr;
+        } catch (err) {
+            console.error('加载本地数据失败:', err);
+            return defaultValue;
+        }
+    }
 
 
     // ========== 电脑 配置数据 ==========
@@ -1412,15 +1438,6 @@
 
     // 绑定分组切换事件
     function bindConfigToggleEvent_pc() {
-        const configBtn = document.getElementById("configToggleBtn_pc");
-        configBtn.addEventListener("click", function () {
-            currentConfigKey_pc = currentConfigKey_pc === "groupA" ? "groupB" : "groupA";
-            rolesConfig_pc = generateRolesConfig_pc(currentConfigKey_pc);
-            this.textContent = currentConfigKey_pc === "groupA" ? "切换类型分组" : "切换价值分组";
-            initGroupTitles_pc(currentConfigKey_pc);
-            renderRoleByGroup_pc();
-            bindRoleGroupDragEvents_pc();
-        });
     }
 
     // 绑定分组拖拽事件
@@ -1724,6 +1741,10 @@
         // 4. 更新总价值显示
         const totalSpan = document.getElementById('totalValue_pc');
         if (totalSpan) totalSpan.textContent = total;
+
+        // 保存本地
+        const jsonStr = handleExport_pc()
+        saveDataToLocal_pc(STORAGE_KEY_PC, jsonStr);
     }
 
 
@@ -1749,7 +1770,8 @@
 
 
     // ========== 导出导入功能 - PC端 ==========
-    function exportTeams_pc() {
+
+    function handleExport_pc() {
         const exportData = {
             version: "1.0",
             timestamp: new Date().toISOString(),
@@ -1772,12 +1794,20 @@
             exportData.teams[teamNum] = roles;
         }
 
+
         // 获取特防开关状态
         const defenseSwitch = document.getElementById('defense-switch-pc');
         exportData.defenseEnabled = defenseSwitch ? defenseSwitch.checked : false;
 
-        // 转换为JSON字符串
+
         const jsonStr = JSON.stringify(exportData, null, 0);
+        return jsonStr;
+    }
+
+
+    function exportTeams_pc() {
+
+        const jsonStr = handleExport_pc();
 
         // 显示在文本框中
         const textArea = document.getElementById('importExportText_pc');
@@ -1797,21 +1827,9 @@
         }
     }
 
-    function importTeams_pc() {
-        const textArea = document.getElementById('importExportText_pc');
-        if (!textArea || !textArea.value.trim()) {
-            showToast_pc("请先在文本框中粘贴要导入的JSON数据！");
-            return;
-        }
 
+    function handleImport_pc(importData) {
         try {
-            const importData = JSON.parse(textArea.value.trim());
-
-            if (!importData.teams || typeof importData.teams !== 'object') {
-                showToast_pc("无效的数据格式：缺少teams字段");
-                return;
-            }
-
             // 先清空所有队伍
             for (let teamNum = 1; teamNum <= 3; teamNum++) {
                 clearTeam_pc(teamNum);
@@ -1877,13 +1895,31 @@
 
             updateTotalValue_pc();
             //alert(`导入成功！共导入 ${totalImported} 个角色。`);
-            showToast_pc(`导入成功！共导入 ${totalImported} 个角色。`);
+            return totalImported;
+            //showToast_pc(`导入成功！共导入 ${totalImported} 个角色。`);
 
 
         } catch (e) {
             //alert("解析JSON失败：" + e.message);
             showToast_pc("解析JSON失败：" + e.message);
         }
+    }
+
+    function importTeams_pc() {
+        const textArea = document.getElementById('importExportText_pc');
+        if (!textArea || !textArea.value.trim()) {
+            showToast_pc("请先在文本框中粘贴要导入的JSON数据！");
+            return;
+        }
+        const importData = JSON.parse(textArea.value.trim());
+
+        if (!importData.teams || typeof importData.teams !== 'object') {
+            showToast_pc("无效的数据格式：缺少teams字段");
+            return;
+        }
+
+        const totalImported = handleImport_pc(importData);
+        showToast_pc(`导入成功！共导入 ${totalImported} 个角色。`);
     }
 
 
@@ -1937,6 +1973,7 @@
         div.dataset.value = role.value;
         div.value = role.value;
         div.value2 = role.value2;
+        div.id = role.id;
         div.innerHTML = `
         <div class="role-avatar_mobile"><img src="${role.avatarSrc}" alt="${role.name}"></div>
         <div class="role-info_mobile">
@@ -2114,6 +2151,10 @@
 
         // 最终更新全局总价值显示
         document.getElementById("globalTotalValue_mobile").textContent = total;
+
+        // 保存本地
+        const jsonStr = handleExport_mobile()
+        saveDataToLocal_pc(STORAGE_KEY_MOBILE, jsonStr);
     }
 
 
@@ -2151,7 +2192,10 @@
     }
 
     // ========== 导出导入功能 - 移动端 ==========
-    function exportTeams_mobile() {
+
+
+
+    function handleExport_mobile() {
         const exportData = {
             version: "1.0",
             timestamp: new Date().toISOString(),
@@ -2179,13 +2223,17 @@
 
         // 转换为JSON字符串
         const jsonStr = JSON.stringify(exportData, null, 0);
+        return jsonStr;
+    }
 
+    function exportTeams_mobile() {
+        const jsonStr = handleExport_mobile();
         const textArea = document.getElementById('importExportText_mobile');
         if (textArea) {
             textArea.value = jsonStr;
         }
 
-        
+
         try {
             // 兼容所有手机的复制方案
             const textarea = document.createElement('textarea');
@@ -2210,20 +2258,9 @@
         }
     }
 
-    function importTeams_mobile() {
-        const textArea = document.getElementById('importExportText_mobile');
-        if (!textArea || !textArea.value.trim()) {
-            showToast_mobile("请先在文本框中粘贴要导入的JSON数据！");
-            return;
-        }
-
+    function handleImport_mobile(importData) {
         try {
-            const importData = JSON.parse(textArea.value.trim());
 
-            if (!importData.teams || typeof importData.teams !== 'object') {
-                showToast_mobile("无效的数据格式：缺少teams字段");
-                return;
-            }
 
             // 先清空所有队伍
             for (let teamId = 1; teamId <= 3; teamId++) {
@@ -2253,9 +2290,17 @@
                     if (roleData && roleData.id) {
                         const role = getRoleById_mobile(roleData.id);
                         if (role) {
+
                             addRoleToTeam_mobile(role, teamId);
                             usedRoleMap_mobile.set(role.id, teamId);
+
                             totalImported++;
+                            // ✅ 补上：让角色卡片变灰、不可选
+                            const roleCard = document.getElementById(role.id);
+                            if (roleCard) {
+                                roleCard.classList.add("disabled_mobile");
+                            }
+
                         }
                     }
                 }
@@ -2264,11 +2309,28 @@
             }
 
             updateGlobalTotalValue_mobile();
-            showToast_mobile(`导入成功！共导入 ${totalImported} 个角色。`);
+            return totalImported;
+            //showToast_mobile(`导入成功！共导入 ${totalImported} 个角色。`);
 
         } catch (e) {
             showToast_mobile("解析JSON失败：" + e.message);
         }
+    }
+
+    function importTeams_mobile() {
+        const textArea = document.getElementById('importExportText_mobile');
+        if (!textArea || !textArea.value.trim()) {
+            showToast_mobile("请先在文本框中粘贴要导入的JSON数据！");
+            return;
+        }
+        const importData = JSON.parse(textArea.value.trim());
+
+        if (!importData.teams || typeof importData.teams !== 'object') {
+            showToast_mobile("无效的数据格式：缺少teams字段");
+            return;
+        }
+        const totalImported = handleImport_pc(importData);
+        showToast_mobile(`导入成功！共导入 ${totalImported} 个角色。`);
     }
 
 
@@ -2291,7 +2353,15 @@
         }
 
         // 3. 初始化总价值
-        updateGlobalTotalValue_mobile();
+        //updateGlobalTotalValue_mobile();
+
+        // 读取本地
+        const textArea = loadDataFromLocal_pc(STORAGE_KEY_MOBILE);
+        if (textArea) {
+            const importData = JSON.parse(textArea);
+            handleImport_mobile(importData);
+        }
+
     }
 
 
@@ -2317,6 +2387,14 @@
         bindConfigToggleEvent_pc();
         // 绑定分组拖拽
         bindRoleGroupDragEvents_pc();
+
+
+        // 读取本地
+        const textArea = loadDataFromLocal_pc(STORAGE_KEY_PC);
+        if (textArea) {
+            const importData = JSON.parse(textArea);
+            handleImport_pc(importData);
+        }
 
 
     }
